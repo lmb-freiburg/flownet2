@@ -1,37 +1,107 @@
-# Caffe
+Caffe for FlowNet2 
+==================
 
-[![Build Status](https://travis-ci.org/BVLC/caffe.svg?branch=master)](https://travis-ci.org/BVLC/caffe)
-[![License](https://img.shields.io/badge/license-BSD-blue.svg)](LICENSE)
+This the relase of:
+ - the CVPR 2017 version of FlowNet2.0
 
-Caffe is a deep learning framework made with expression, speed, and modularity in mind.
-It is developed by the Berkeley Vision and Learning Center ([BVLC](http://bvlc.eecs.berkeley.edu)) and community contributors.
+It comes as a fork of the caffe master branch and with trained networks,
+as well as examples to use and train them.
 
-Check out the [project site](http://caffe.berkeleyvision.org) for all the details like
 
-- [DIY Deep Learning for Vision with Caffe](https://docs.google.com/presentation/d/1UeKXVgRvvxg9OUdh_UiC5G71UMscNPlvArsWER41PsU/edit#slide=id.p)
-- [Tutorial Documentation](http://caffe.berkeleyvision.org/tutorial/)
-- [BVLC reference models](http://caffe.berkeleyvision.org/model_zoo.html) and the [community model zoo](https://github.com/BVLC/caffe/wiki/Model-Zoo)
-- [Installation instructions](http://caffe.berkeleyvision.org/installation.html)
+Compiling
+=========
 
-and step-by-step examples.
+First compile caffe, by configuring a
 
-[![Join the chat at https://gitter.im/BVLC/caffe](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/BVLC/caffe?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+    "Makefile.config" (example given in Makefile.config.example)
 
-Please join the [caffe-users group](https://groups.google.com/forum/#!forum/caffe-users) or [gitter chat](https://gitter.im/BVLC/caffe) to ask questions and talk about methods and models.
-Framework development discussions and thorough bug reports are collected on [Issues](https://github.com/BVLC/caffe/issues).
+then make with 
 
-Happy brewing!
+    $ make -j 5 all tools pycaffe 
 
-## License and Citation
 
-Caffe is released under the [BSD 2-Clause license](https://github.com/BVLC/caffe/blob/master/LICENSE).
-The BVLC reference models are released for unrestricted use.
+Running 
+=======
 
-Please cite Caffe in your publications if it helps your research:
+(this assumes you compiled the code sucessfully) 
 
-    @article{jia2014caffe,
-      Author = {Jia, Yangqing and Shelhamer, Evan and Donahue, Jeff and Karayev, Sergey and Long, Jonathan and Girshick, Ross and Guadarrama, Sergio and Darrell, Trevor},
-      Journal = {arXiv preprint arXiv:1408.5093},
-      Title = {Caffe: Convolutional Architecture for Fast Feature Embedding},
-      Year = {2014}
-    }
+IMPORTANT: make sure there is no other caffe version in your python and 
+system paths and set up your environment with: 
+
+    $ source set-env.sh 
+
+This will configure all paths for you. Then go to the model folder 
+and download models: 
+
+    $ cd models 
+    $ ./download-models.sh 
+ 
+Running a FlowNet on a single image pair ($net is a folder in models): 
+
+    $ run-flownet.py /path/to/$net/$net_weights.caffemodel[.h5] \
+                     /path/to/$net/$net_deploy.prototxt.template \ 
+                     x.png y.png z.flo 
+
+(where x.png and y.png are images and z.flo is the output file) 
+
+Running  a FlowNet on lots of image pairs: 
+
+    $ run-flownet-many.py /path/to/$net/$net_weights.caffemodel[.h5] \ 
+                          /path/to/$net/$net_deploy.prototxt.template \
+                           list.txt 
+
+(where list.txt contains lines of the form "x.png y.png z.flo") 
+
+NOTE: If you want to compute many flows, this option is much faster since 
+caffe and the net are loaded only once. 
+
+
+Training
+========
+
+(this assumes you compiled the code sucessfully) 
+
+First you need to download and prepare the training data. For that go to the data folder: 
+
+    $ cd data 
+
+Then run: 
+
+    $ ./download.sh 
+    $ ./make-lmdbs.sh 
+
+(this will take some time and quite some disk space) 
+
+Then set up your network for training ($net is a folder in models):
+	
+    $ cd /path/to/$net 
+    $ cp ../solver_S_<type>.prototxt solver.prototxt 
+    $ cp $net_train.prototxt.template train.prototxt 
+    # Edit train.prototxt and make sure all settings are correct 
+    $ caffe train --solver solver.prototxt 
+
+IMPORTANT: Edit train.prototxt to use your selected dataset and 
+make sure the correct parts of the network are enabled by setting/adding
+loss weights and blob learning rates. 
+
+NOTE: The training templates include augmentation, during which an affine 
+transformation is applied to a crop from the input immages. The crop sizes to use are: 
+
+FlyingChairs: 		448 x 320  
+ChairsSDHom:		448 x 320 
+FlyingThings3D:		768 x 384 
+
+
+License and Citation
+====================
+
+Please cite this paper in your publications if you use FlowNet2 or ChairsSDHom for your research:
+
+@InProceedings{IMKDB17,
+  author       = "E. Ilg and N. Mayer and T. Saikia and M. Keuper and A. Dosovitskiy and T. Brox",
+  title        = "FlowNet 2.0: Evolution of Optical Flow Estimation with Deep Networks",
+  booktitle    = "IEEE Conference on Computer Vision and Pattern Recognition (CVPR)",
+  month        = "Jul",
+  year         = "2017",
+  url          = "http://lmb.informatik.uni-freiburg.de//Publications/2017/IMKDB17"
+}
