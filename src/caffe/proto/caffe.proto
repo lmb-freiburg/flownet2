@@ -417,9 +417,17 @@ message LayerParameter {
   optional DownsampleParameter downsample_param = 156;
   optional LpqLossParameter lpq_loss_param = 158;
   optional FlowWarpParameter flow_warp_param = 159;
+  optional AccumParameter accum_param = 160;
 
   // If should run reshape every iteration
   optional bool reshape_every_iter = 157 [default = true];
+}
+
+message AccumParameter {
+  optional uint32 top_height = 1 [default = 0]; // The output height
+  optional uint32 top_width = 2 [default = 0]; // The output width
+  optional uint32 size_divisible_by = 3 [default = 0]; // Upscales to the minimal size divisible by the given number
+  optional bool have_reference = 4 [ default = false ];
 }
 
 // Message storing the actual coefficients of a transformation
@@ -659,6 +667,7 @@ message ResampleParameter {
     optional uint32 width  = 1;
     optional uint32 height = 2;
     optional ResampleType type = 3 [ default = LINEAR ];
+    optional float factor = 5 [ default = 1.0 ];
 }
 
 message MeanParameter { 

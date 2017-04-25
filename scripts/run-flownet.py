@@ -36,7 +36,6 @@ else:                   input_data.append(img1[np.newaxis, :, :, :].transpose(0,
 
 width = input_data[0].shape[3]
 height = input_data[0].shape[2]
-
 vars = {}
 vars['TARGET_WIDTH'] = width
 vars['TARGET_HEIGHT'] = height
@@ -45,8 +44,8 @@ divisor = 64.
 vars['ADAPTED_WIDTH'] = int(ceil(width/divisor) * divisor)
 vars['ADAPTED_HEIGHT'] = int(ceil(height/divisor) * divisor)
 
-vars['SCALE_WIDTH'] = width / vars['ADAPTED_WIDTH'];
-vars['SCALE_HEIGHT'] = height / vars['ADAPTED_HEIGHT'];
+vars['SCALE_WIDTH'] = width / float(vars['ADAPTED_WIDTH']);
+vars['SCALE_HEIGHT'] = height / float(vars['ADAPTED_HEIGHT']);
 
 tmp = tempfile.NamedTemporaryFile(mode='w', delete=True)
 
@@ -121,6 +120,8 @@ def writeFlow(name, flow):
     np.array([flow.shape[1], flow.shape[0]], dtype=np.int32).tofile(f)
     flow = flow.astype(np.float32)
     flow.tofile(f)
+    f.flush()
+    f.close() 
 
 writeFlow(args.out, blob)
 

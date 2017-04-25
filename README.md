@@ -101,8 +101,8 @@ NOTE: The training templates include augmentation, during which an affine
 transformation is applied to a crop from the input immages. The crop sizes to use are: 
 
 FlyingChairs: 		448 x 320  
-ChairsSDHom:		448 x 320 
-FlyingThings3D:		768 x 384 
+ChairsSDHom:		448 x 320  
+FlyingThings3D:		768 x 384  
 
 
 

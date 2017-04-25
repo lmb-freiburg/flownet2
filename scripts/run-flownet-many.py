@@ -59,8 +59,8 @@ for ent in ops:
         vars['ADAPTED_WIDTH'] = int(ceil(width/divisor) * divisor)
         vars['ADAPTED_HEIGHT'] = int(ceil(height/divisor) * divisor)
 
-        vars['SCALE_WIDTH'] = width / vars['ADAPTED_WIDTH'];
-        vars['SCALE_HEIGHT'] = height / vars['ADAPTED_HEIGHT'];
+        vars['SCALE_WIDTH'] = width / float(vars['ADAPTED_WIDTH']);
+        vars['SCALE_HEIGHT'] = height / float(vars['ADAPTED_HEIGHT']);
 
         tmp = tempfile.NamedTemporaryFile(mode='w', delete=False)
 
