@@ -7,6 +7,19 @@ This the relase of:
 It comes as a fork of the caffe master branch and with trained networks,
 as well as examples to use and train them.
 
+License and Citation
+====================
+
+All code is provided for research purposes only and without any warranty. Any commercial use requires our consent. When using the code in your research work, please cite the following paper:
+
+@InProceedings{IMKDB17,
+  author       = "E. Ilg and N. Mayer and T. Saikia and M. Keuper and A. Dosovitskiy and T. Brox",
+  title        = "FlowNet 2.0: Evolution of Optical Flow Estimation with Deep Networks",
+  booktitle    = "IEEE Conference on Computer Vision and Pattern Recognition (CVPR)",
+  month        = "Jul",
+  year         = "2017",
+  url          = "http://lmb.informatik.uni-freiburg.de//Publications/2017/IMKDB17"
+}
 
 Compiling
 =========
@@ -92,16 +105,4 @@ ChairsSDHom:		448 x 320
 FlyingThings3D:		768 x 384 
 
 
-License and Citation
-====================
 
-Please cite this paper in your publications if you use FlowNet2 or ChairsSDHom for your research:
-
-@InProceedings{IMKDB17,
-  author       = "E. Ilg and N. Mayer and T. Saikia and M. Keuper and A. Dosovitskiy and T. Brox",
-  title        = "FlowNet 2.0: Evolution of Optical Flow Estimation with Deep Networks",
-  booktitle    = "IEEE Conference on Computer Vision and Pattern Recognition (CVPR)",
-  month        = "Jul",
-  year         = "2017",
-  url          = "http://lmb.informatik.uni-freiburg.de//Publications/2017/IMKDB17"
-}
