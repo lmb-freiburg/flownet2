@@ -64,7 +64,7 @@ void Net<Dtype>::Init(const NetParameter& in_param) {
   param_id_vecs_.resize(param.layer_size());
   top_id_vecs_.resize(param.layer_size());
   bottom_need_backward_.resize(param.layer_size());
-  for (int layer_id = 0; layer_id < param.layer_size(); ++layer_id) {
+    for (int layer_id = 0; layer_id < param.layer_size(); ++layer_id) {
     // For non-root solvers, whether this layer is shared from root_net_.
     bool share_from_root = !Caffe::root_solver()
         && root_net_->layers_[layer_id]->ShareInParallel();
@@ -86,6 +86,8 @@ void Net<Dtype>::Init(const NetParameter& in_param) {
       layers_[layer_id]->SetShared(true);
     } else {
       layers_.push_back(LayerRegistry<Dtype>::CreateLayer(layer_param));
+      Layer<Dtype>* layer = layers_[layer_id].get();
+      layer->SetNet(this);
     }
     layer_names_.push_back(layer_param.name());
     LOG_IF(INFO, Caffe::root_solver())
@@ -100,6 +102,7 @@ void Net<Dtype>::Init(const NetParameter& in_param) {
       // If a blob needs backward, this layer should provide it.
       need_backward |= blob_need_backward_[blob_id];
     }
+//     LOG(INFO) << "DEBUG: need_backward = " << need_backward;
     int num_top = layer_param.top_size();
     for (int top_id = 0; top_id < num_top; ++top_id) {
       AppendTop(param, layer_id, top_id, &available_blobs, &blob_name_to_idx);
@@ -114,7 +117,7 @@ void Net<Dtype>::Init(const NetParameter& in_param) {
     // specified fewer than the required number (as specified by
     // ExactNumTopBlobs() or MinTopBlobs()), allocate them here.
     Layer<Dtype>* layer = layers_[layer_id].get();
-    layer->SetNet(this);
+
     if (layer->AutoTopBlobs()) {
       const int needed_num_top =
           std::max(layer->MinTopBlobs(), layer->ExactNumTopBlobs());
@@ -164,7 +167,11 @@ void Net<Dtype>::Init(const NetParameter& in_param) {
     for (int param_id = 0; param_id < num_param_blobs; ++param_id) {
       const ParamSpec* param_spec = (param_id < param_size) ?
           &layer_param.param(param_id) : &default_param_spec;
-      const bool param_need_backward = param_spec->lr_mult() != 0;
+      bool param_need_backward = param_spec->lr_mult() != 0;
+      
+      if (!layer->AllowBackward())
+        param_need_backward = false;
+      
       need_backward |= param_need_backward;
       layers_[layer_id]->set_param_propagate_down(param_id,
                                                   param_need_backward);
@@ -172,6 +179,9 @@ void Net<Dtype>::Init(const NetParameter& in_param) {
     for (int param_id = 0; param_id < num_param_blobs; ++param_id) {
       AppendParam(param, layer_id, param_id);
     }
+    if (!layer->AllowBackward())
+        need_backward = false;
+    LOG(INFO) << "DEBUG: need_backward = " << need_backward;
     // Finally, set the backward flag
     layer_need_backward_.push_back(need_backward);
     if (need_backward) {

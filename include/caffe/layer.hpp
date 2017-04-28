@@ -315,6 +315,16 @@ class Layer {
   }
 
   /**
+   * @brief By Alexey: return whether to allow backward for this layer
+   *
+   * If AllowBackward = false, this layer will never do backward
+   */
+  virtual inline bool AllowBackward() const {
+    return true;
+  }
+
+
+  /**
    * @brief Specifies whether the layer should compute gradients w.r.t. a
    *        parameter at a particular index given by param_id.
    *

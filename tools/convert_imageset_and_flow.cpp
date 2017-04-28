@@ -35,6 +35,8 @@
 #include "caffe/proto/caffe.pb.h"
 #include "caffe/util/io.hpp"
 #include "caffe/util/output.hpp"
+#include "thirdparty/CImg/CImg.h"
+using namespace cimg_library;
 
 #include <iostream>
 using namespace std;
@@ -42,6 +44,31 @@ using namespace std;
 using namespace caffe;  // NOLINT(build/namespaces)
 using std::pair;
 using std::string;
+
+void readPfmFile(string filename, float*& data, int& width, int& height)
+{
+    CImg<float> pfm_img;
+    pfm_img.load_pfm(filename.c_str());
+
+    width = pfm_img.width();
+    height = pfm_img.height();
+
+    data = new float[width*height*2];
+
+    float* ptr = data;
+    for(int c=0; c<2; c++)
+        for(int y=0; y<height; y++)
+            for(int x=0; x<width; x++)
+                *ptr++ = pfm_img(x,y,0,c);
+}
+
+bool hasEnding (std::string const &fullString, std::string const &ending) {
+    if (fullString.length() >= ending.length()) {
+        return (0 == fullString.compare (fullString.length() - ending.length(), ending.length(), ending));
+    } else {
+        return false;
+    }
+}
 
 class ImagePair
 {
@@ -93,7 +120,10 @@ public:
         float* flo_data=0;
         if(has_flow())
         {
-            readFloFile(flo_filename,flo_data,xSize,ySize);
+            if(hasEnding(flo_filename, ".pfm"))
+                readPfmFile(flo_filename,flo_data,xSize,ySize);
+            else
+                readFloFile(flo_filename,flo_data,xSize,ySize);
         }
         else
         {
