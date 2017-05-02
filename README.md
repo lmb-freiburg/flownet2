@@ -1,7 +1,7 @@
 Caffe for FlowNet2 
 ==================
 
-This the relase of:
+This is the release of:
  - the CVPR 2017 version of FlowNet2.0
 
 It comes as a fork of the caffe master branch and with trained networks,
