@@ -418,6 +418,7 @@ message LayerParameter {
   optional LpqLossParameter lpq_loss_param = 158;
   optional FlowWarpParameter flow_warp_param = 159;
   optional AccumParameter accum_param = 160;
+  optional BlackAugmentationParameter black_augmentation_param = 161;
 
   // If should run reshape every iteration
   optional bool reshape_every_iter = 157 [default = true];
@@ -542,6 +543,11 @@ message AugmentationParameter {
   optional RandomGeneratorParameter shadow_distance = 105 ;
   optional RandomGeneratorParameter shadow_strength = 106 ;
   optional RandomGeneratorParameter noise = 107 ;
+}
+
+message BlackAugmentationParameter {
+    optional RandomGeneratorParameter black = 10;
+    optional RandomGeneratorParameter border = 11;
 }
 
 message FlowWarpParameter {
