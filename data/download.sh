@@ -1,4 +1,4 @@
-#!/bin/bash 
+#!/bin/bash
 
 mkdir FlyingThings3D_release
 cd FlyingThings3D_release
@@ -9,8 +9,8 @@ wget http://lmb.informatik.uni-freiburg.de/data/SceneFlowDatasets_CVPR16/Release
 tar xvf flyingthings3d__frames_cleanpass.tar
 tar xvf flyingthings3d__optical_flow.tar.bz2
 
-cd .. 
-wget http://lmb.informatik.uni-freiburg.de/resources/datasets/FlyingChairs/FlyingChairs.zip
+cd ..
+wget http://lmb.informatik.uni-freiburg.de/data/FlyingChairs/FlyingChairs.zip
 unzip FlyingChairs.zip
 
 wget https://lmb.informatik.uni-freiburg.de/data/FlowNet2/ChairsSDHom/ChairsSDHom.tar.gz
