@@ -155,7 +155,7 @@ public:
                     if(isnan(cv_disp.at<float>(y, x)))
                         value=std::numeric_limits<short>::max();
                     else
-                        value=cv_disp.at<float>(y, x); // = flo_data[j]*32.768/1024;
+                        value=cv_disp.at<float>(y, x)*32; // = flo_data[j]*32.768/1024;
                 }
 
                 *(ptr++)=*((unsigned char*)&value);
