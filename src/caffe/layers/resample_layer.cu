@@ -7,7 +7,7 @@
 #include "caffe/util/math_functions.hpp"
 
 #include <opencv2/opencv.hpp>
-#include <opencv2/gpu/gpu.hpp>
+//#include <opencv2/gpu/gpu.hpp>
 
 namespace caffe {
 
