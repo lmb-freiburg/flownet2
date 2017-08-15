@@ -24,6 +24,7 @@
 #include <algorithm>
 #include <fstream>  // NOLINT(readability/streams)
 #include <string>
+#include <limits>
 #include <utility>
 #include <vector>
 
