@@ -132,7 +132,7 @@ public:
         }
 
         assert(cv_img1.cols==xSize && cv_img1.rows==ySize );
-        assert(cv_img2.cols==xSize && cv_img1.rows==ySize );
+        assert(cv_img2.cols==xSize && cv_img2.rows==ySize );
         if(has_occlusions())
             assert(cv_occ.rows==ySize && cv_occ.cols==xSize);
 
