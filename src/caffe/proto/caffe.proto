@@ -59,8 +59,19 @@ message FillerParameter {
     AVERAGE = 2;
   }
   optional VarianceNorm variance_norm = 8 [default = FAN_IN];
+    optional float msra_coeff = 5001 [default = 1];
 
-  repeated float diag_val = 9;
+  repeated float diag_val = 5002;
+  repeated float static_val = 5008;
+
+  optional float initial_value = 5003 [default = 0];
+  optional float final_value = 5004 [default = 0];
+  optional float half_life = 5005 [default = 1];
+
+  optional float sigma1 = 5006 [default = 1];
+  optional float sigma2 = 5007 [default = 2];
+
+
 }
 
 message NetParameter {
@@ -432,7 +443,7 @@ message AccumParameter {
 }
 
 // Message storing the actual coefficients of a transformation
-// IMPORTANT: default values should be 0 or 1 
+// IMPORTANT: default values should be 0 or 1
 message AugmentationCoeff {
   // Spatial
   optional float mirror = 1 [default = 0];
@@ -441,7 +452,7 @@ message AugmentationCoeff {
   optional float angle = 4 [default = 0];
   optional float zoom_x = 5 [default = 1];
   optional float zoom_y = 6 [default = 1];
-  
+
   // Chromatic
   optional float gamma = 100 [default = 1];
   optional float brightness = 101 [default = 0];
@@ -511,7 +522,7 @@ message AugmentationParameter {
   optional RandomGeneratorParameter squeeze = 14 ;
   optional RandomGeneratorParameter translate_x = 15 ;
   optional RandomGeneratorParameter translate_y = 16 ;
-  
+
 
   // Chromatic
   optional RandomGeneratorParameter gamma = 35 ;
@@ -567,25 +578,25 @@ message LpqLossParameter {
   optional bool l2_prescale_by_channels = 4016 [default = false];
   // if we want to normalize not by batch size, but by the number of non-NaN entries
   optional bool normalize_by_num_entries = 4017 [default = false];
-  
-  /** 
+
+  /**
    * "Shift" for p-PowerLayer. Since the Lpq layer uses this parameter
    * to avoid singularities around 0, and p is usually >=1, this parameter
    * is normally 0.
    */
   optional float p_epsilon = 4013 [default = 0];
-  /** 
+  /**
    * "Shift" for q-PowerLayer. Since the Lpq layer uses this parameter
    * to avoid singularities around 0, and q is usually <=1, this parameter
    * is usually relevant and positive.
    */
   optional float q_epsilon = 4014 [default = 1e-2];
-  
+
   /****************************
    * If one of each of the following is given, p/q are constant and the entry
    * in "pq_episode_starts_at_iter" must be 0 (else the first entry must be 0).
-   * 
-   * If multiple values are given (the number of values must be the same for 
+   *
+   * If multiple values are given (the number of values must be the same for
    * each parameter), then p/q will jump at each iteration number given in
    * "pq_episode_starts_at_iter".
    ****************************
@@ -606,9 +617,9 @@ message LpqLossParameter {
 // Message used by AugmentationParameter for describing how to generate augmentation parameters
 message RandomGeneratorParameter {
   optional string rand_type = 1 [default = "uniform" ]; // can be uniform, gaussian, bernoulli
-  optional bool exp = 2 [default = false ]; // after generating the random number, exponentiate it or not 
+  optional bool exp = 2 [default = false ]; // after generating the random number, exponentiate it or not
   optional float mean = 4 [default = 0. ]; // mean of the random variable
-  optional float spread = 5 [default = 0. ]; // half of interval length for uniform; standard deviation for gaussian 
+  optional float spread = 5 [default = 0. ]; // half of interval length for uniform; standard deviation for gaussian
   optional float prob = 6 [default = 1.];
   optional bool apply_schedule = 7 [default = true];
   optional bool discretize = 8 [default = false]; //Discretize (Round) value from rng to INT
@@ -631,10 +642,10 @@ message CorrelationParameter {
   optional uint32 max_displacement = 4; // The maximum displacement (square)
   optional uint32 stride_1 = 5 [default = 1]; // The stride in blob 1 (equal in Y, X)
   optional uint32 stride_2 = 6 [default = 1]; // The stride in blob 2 (equal in Y, X)
-  
+
   // For Correlation1D:
   optional int32 single_direction = 8 [default = 0]; // Correlate only to the left (-1) or right (1)
-  
+
   optional bool do_abs = 7 [default = false]; // Use absolute value of result
   enum CorrelationType {
     MULTIPLY = 0;
@@ -646,14 +657,14 @@ message CorrelationParameter {
 message DownsampleParameter {
   optional uint32 top_height = 1 [default = 0]; // The output height
   optional uint32 top_width = 2 [default = 0]; // The output width
-} 
+}
 
-message ReaderParameter { 
+message ReaderParameter {
     required string file = 1;
     optional uint32 num = 2 [default=1];
 }
 
-message WriterParameter { 
+message WriterParameter {
     optional string file = 1 [default=""];
     optional string folder = 2 [default=""];
     optional string prefix = 3 [default=""];
@@ -676,7 +687,7 @@ message ResampleParameter {
     optional float factor = 5 [ default = 1.0 ];
 }
 
-message MeanParameter { 
+message MeanParameter {
   enum MeanOperation {
     ADD = 1;
     SUBTRACT = 4;
@@ -915,7 +926,7 @@ message CropParameter {
   repeated uint32 offset = 2;
 }
 
-message DataParameter { 
+message DataParameter {
   enum DB {
     LEVELDB = 0;
     LMDB = 1;
@@ -929,7 +940,7 @@ message DataParameter {
     FIRST_PERMUTE_THEN_RANGE = 0;
     FIRST_RANGE_THEN_PERMUTE = 1;
   }
-  
+
   // Specify the data source.
   optional string source = 1;
   // Specify the batch size.
@@ -965,17 +976,17 @@ message DataParameter {
   optional bool huge_video_dataset = 7000 [default = false];
   // Use a non-negative value, to load only this number of dataset samples in binarydb_*
   optional int32 limit_samples = 7001 [default = -1];
-  
+
   optional string preselection_file = 3001; // Load a text file which specifies a label for each data sample. Use preselection_label to filter the data for one specific label.
   optional int32 preselection_label = 3002;
-  
+
   optional int32 range_start = 3003 [default = 0]; //0 = start with first
   optional int32 range_end = 3004 [default = -1]; //-1 = go until end
-  
+
   optional bool rand_permute = 3005 [default = false];
   optional RANDPERMORDER rand_permute_order = 3006 [default = FIRST_PERMUTE_THEN_RANGE]; // permute indices first, then extract range (or other way around)
   optional uint32 rand_permute_seed = 3007 [default = 0]; // In BinaryDB (and webp), 0 means using timer randomization!
-  
+
   repeated uint32 slice_point = 3008;
   repeated CHANNELENCODING encoding = 3009;
   optional bool verbose = 3010 [default = false];
