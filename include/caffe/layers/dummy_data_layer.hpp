@@ -29,7 +29,7 @@ class DummyDataLayer : public Layer<Dtype> {
       const vector<Blob<Dtype>*>& top) {}
 
   virtual inline const char* type() const { return "DummyData"; }
-  virtual inline int ExactNumBottomBlobs() const { return 0; }
+  virtual inline int MaxBottomBlobs() const { return 1; }
   virtual inline int MinTopBlobs() const { return 1; }
 
  protected:
